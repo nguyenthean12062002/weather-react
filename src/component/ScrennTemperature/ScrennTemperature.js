@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { IoIosAdd } from "react-icons/io";
 import { TiLocationArrowOutline } from "react-icons/ti";
 import { TbTemperatureCelsius } from "react-icons/tb";
@@ -6,10 +6,13 @@ import { FaWind } from "react-icons/fa";
 import { FaSpinner } from "react-icons/fa6";
 import { RiMapPinTimeFill } from "react-icons/ri";
 
+// search
+import Search from "../Search/Search";
 import Flexs from "../Flex/Flexs";
 // datacontext
 import { DataContext } from "../../services/DataProvider";
 const ScrennTemperature = () => {
+  const [isHidden, setIsHidden] = useState(true);
   const { dataCurent } = useContext(DataContext);
   // const { sys, name, wind, timezone, main } = dataCurent;
   //get day
@@ -69,37 +72,47 @@ const ScrennTemperature = () => {
         </Flexs>
       ) : (
         <>
-          <Flexs justify="between" p="24">
-            <IoIosAdd className="text-[1.7rem] cursor-pointer" />
+          <Flexs className="w-[100%]" justify="between" p="24">
+            <div
+              onClick={() => {
+                setIsHidden(!isHidden);
+              }}
+            >
+              <IoIosAdd className="text-[1.7rem] cursor-pointer" />
+            </div>
             {/* toogle C => F */}
             <div className="text-[1.1rem]">Đổi</div>
           </Flexs>
           {/* show temperature at where */}
-          <main className=" p-[24px]">
-            <div className="mb-[12px] text-[1.1rem]">
+          <main className="w-full p-[24px]">
+            <div className="w-full mb-[12px] text-[1.1rem]">
               {/* address */}
-              <Flexs justify="between">
-                <div className="flex items-centers">
+              <div className="w-full grid grid-cols-[1fr,20%] ">
+                <div className="w-full flex items-centers justify-start">
                   <TiLocationArrowOutline className="text-[1.3rem]" />
                   <span>
                     {dataCurent.name} - {dataCurent.sys.country}
                   </span>
                 </div>
-                <Flexs className="w-[80px]" justify="between">
+                <div className=" flex items-center justify-between ">
                   <FaWind className="text-[0.9rem]" />
-                  {dataCurent.wind.speed}
-                </Flexs>
-              </Flexs>
+                  <span className="text-gray-200  text-end">
+                    {dataCurent.wind.speed}
+                  </span>
+                </div>
+              </div>
               {/* date */}
-              <Flexs justify="between">
-                <span>
+              <div className="w-full grid grid-cols-[1fr,20%]  ">
+                <span className="block">
                   To day-{day} {month}{" "}
                 </span>
-                <Flexs className="w-[80px]" justify="between">
+                <div className="flex items-center justify-between">
                   <RiMapPinTimeFill className="text-[0.98rem]" />
-                  {dataCurent.timezone}
-                </Flexs>
-              </Flexs>
+                  <span className="text-gray-200  text-end">
+                    {dataCurent.timezone}
+                  </span>
+                </div>
+              </div>
             </div>
             {/* temperature */}
             <Flexs justify="center" className="relative mt-6">
@@ -107,7 +120,11 @@ const ScrennTemperature = () => {
               <TbTemperatureCelsius className="text-[4rem] absolute top-[-2%] right-[0%]" />
             </Flexs>
             <Flexs justify="center" className="mt-[8px]">
-              <div className="text-[1rem] mr-[4px]">Icon nắng mưa</div>
+              <div className="text-[1rem] mr-[4px]">
+                <img
+                  src={`https://openweathermap.org/img/wn/${dataCurent.weather[0].icon}@2x.png`}
+                />
+              </div>
               <div className="text-[1.3rem] font-bold">
                 {dataCurent.weather[0].main}
               </div>

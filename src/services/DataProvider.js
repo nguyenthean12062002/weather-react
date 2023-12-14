@@ -6,8 +6,9 @@ export const DataProvider = ({ children }) => {
   const [lon, setLon] = useState("");
   const [lat, setLat] = useState("");
 
+  // get data day curent
   const [dataCurent, setDataCurrent] = useState();
-
+  const [data5days, setData5days] = useState([]);
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition((positions) => {
@@ -23,8 +24,23 @@ export const DataProvider = ({ children }) => {
       });
     }
   }, [lat, lon]);
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((positions) => {
+        fetch(
+          `https://api.openweathermap.org/data/2.5/forecast?lat=${positions.coords.latitude}&lon=${positions.coords.longitude}&cnt=7&appid=${apiKey}&units=metric`
+        )
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.cod === "200" || data.cod === 200) {
+              setData5days(data.list);
+            }
+          });
+      });
+    }
+  }, [lat, lon]);
   return (
-    <DataContext.Provider value={{ dataCurent }}>
+    <DataContext.Provider value={{ dataCurent, data5days }}>
       {children}
     </DataContext.Provider>
   );
